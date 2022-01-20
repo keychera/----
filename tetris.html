@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <canvas id="canvas"></canvas>
+    <body>
+        <script>
+            //ブロックのサイズ（ピクセル）
+            const BLOCK_SIZE = 30
+
+            let canvas = document.getElementById("canvas")
+            /** @type {CanvasRenderingContext2D} */
+            let context = canvas.getContext("2d")
+
+            let tetro = [
+                [0, 0, 0, 0],
+                [1, 1, 0, 0],
+                [0, 1, 1, 0],
+                [0, 0, 0, 0],
+            ]
+
+            tetro.forEach((row, rowIdx) => row.forEach((col, colIdx) => {
+                if (col) {
+                    let px = colIdx * BLOCK_SIZE
+                    let py = rowIdx * BLOCK_SIZE
+                    context.fillStyle = "red"
+                    context.fillRect(px, py, BLOCK_SIZE, BLOCK_SIZE)
+                    context.strokeStyle = "black"
+                    context.strokeRect(px, py, BLOCK_SIZE, BLOCK_SIZE)
+                }
+            }));
+
+        </script>
+    </body>
+</html>
