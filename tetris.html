@@ -24,21 +24,31 @@
             let tetro = [
                 [0, 0, 0, 0],
                 [1, 1, 0, 0],
-                [0, 1, 1, 0],
+                [0, 1, 1, 1],
                 [0, 0, 0, 0],
             ]
 
             let tetro_x = 0
             let tetro_y = 0
 
-            drawTetro()
+            //フィールドの中身
+            let field = Array(FIELD_ROW).fill().map(u => 
+                Array(FIELD_COL).fill(0)
+            )
 
-            function drawTetro() {
-                context.clearRect(0, 0, SCREEN_W, SCREEN_H)
-                tetro.forEach((row, rowIdx) => row.forEach((col, colIdx) => {
+            field[5][8] = 1
+            field[19][0] = 1
+            field[19][9] = 1
+
+            context.clearRect(0, 0, SCREEN_W, SCREEN_H)
+            drawElement(field)
+            drawElement(tetro, tetro_x, tetro_y)
+
+            function drawElement(element, x = 0, y = 0) {
+                element.forEach((row, rowIdx) => row.forEach((col, colIdx) => {
                     if (col) {
-                        let px = (tetro_x + colIdx) * BLOCK_SIZE
-                        let py = (tetro_y + rowIdx) * BLOCK_SIZE
+                        let px = (x + colIdx) * BLOCK_SIZE
+                        let py = (y + rowIdx) * BLOCK_SIZE
                         context.fillStyle = "red"
                         context.fillRect(px, py, BLOCK_SIZE, BLOCK_SIZE)
                         context.strokeStyle = "black"
@@ -46,6 +56,7 @@
                     }
                 }))
             }
+            
 
             document.onkeydown = e => {
                 switch (e.keyCode) {
@@ -67,7 +78,9 @@
                     default:
                         break
                 }
-                drawTetro()
+                context.clearRect(0, 0, SCREEN_W, SCREEN_H)
+                drawElement(field)
+                drawElement(tetro, tetro_x, tetro_y)
             }
 
             
