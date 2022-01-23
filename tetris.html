@@ -21,11 +21,16 @@
             /** @type {CanvasRenderingContext2D} */
             let context = canvas.getContext("2d")
 
+            let some = [
+                0, 0,
+                1, 0    
+            ]
+
             let tetro = [
-                [0, 0, 0, 0],
+                [0, 0, 0, 1],
                 [1, 1, 0, 0],
-                [0, 1, 1, 1],
-                [0, 0, 0, 0],
+                [0, 0, 0, 1],
+                [1, 1, 0, 0],
             ]
 
             let tetro_x = 0
@@ -37,6 +42,7 @@
             )
 
             field[5][8] = 1
+            field[12][5] = 1
             field[19][0] = 1
             field[19][9] = 1
 
@@ -56,21 +62,36 @@
                     }
                 }))
             }
+
+            function checkObstacle(mx, my) {
+                return tetro.flatMap((row, rowIdx) => row
+                    .map((col, colIdx) => { return { x: colIdx, y: rowIdx, val: col }})
+                    .filter(block => block.val == 1)
+                )
+                // 邪魔があるかどうか？
+                .some(block => {
+                    let nx = block.x + tetro_x + mx
+                    let ny = block.y + tetro_y + my
+                    if (nx < 0 || nx >= FIELD_COL) return true
+                    if (ny < 0 || ny >= FIELD_ROW) return true
+                    return field[ny][nx] == 1
+                })
+            }
             
 
             document.onkeydown = e => {
                 switch (e.keyCode) {
                     case 37: //左
-                        tetro_x--
+                        if (!checkObstacle(-1, 0)) tetro_x--
                         break
                     case 38: //上
-                        tetro_y--
+                        if (!checkObstacle(0, -1)) tetro_y--
                         break
                     case 39: //右
-                        tetro_x++
+                        if (!checkObstacle(1, 0)) tetro_x++
                         break
                     case 40: //下
-                        tetro_y++
+                        if (!checkObstacle(0, 1)) tetro_y++
                         break
                     case 32: //スペース
       
