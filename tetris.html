@@ -14,6 +14,8 @@
             const SCREEN_W = BLOCK_SIZE * FIELD_COL
             const SCREEN_H = BLOCK_SIZE * FIELD_ROW
 
+            const TETRO_SIZE = 4
+
             let canvas = document.getElementById("canvas")
             canvas.width = SCREEN_W
             canvas.height = SCREEN_H
@@ -27,10 +29,10 @@
             ]
 
             let tetro = [
-                [0, 0, 0, 1],
-                [1, 1, 0, 0],
-                [0, 0, 0, 1],
-                [1, 1, 0, 0],
+                [0, 0, 0, 0],
+                [0, 1, 0, 0],
+                [1, 1, 1, 0],
+                [0, 0, 0, 0],
             ]
 
             let tetro_x = 0
@@ -63,8 +65,8 @@
                 }))
             }
 
-            function checkObstacle(mx, my) {
-                return tetro.flatMap((row, rowIdx) => row
+            function checkObstacle(mx, my, element = tetro) {
+                return element.flatMap((row, rowIdx) => row
                     .map((col, colIdx) => { return { x: colIdx, y: rowIdx, val: col }})
                     .filter(block => block.val == 1)
                 )
@@ -78,6 +80,17 @@
                 })
             }
             
+            function rotate() {
+                // assuming tetro is square 2d array
+                let rotated = []
+                for (let y = 0; y < TETRO_SIZE; y++) {
+                    rotated[y] = []
+                    for (let x = 0; x < TETRO_SIZE; x++) {
+                        rotated[y][x] = tetro[TETRO_SIZE - x -1][y];
+                    }
+                }
+                return rotated
+            }
 
             document.onkeydown = e => {
                 switch (e.keyCode) {
@@ -94,7 +107,10 @@
                         if (!checkObstacle(0, 1)) tetro_y++
                         break
                     case 32: //スペース
-      
+                        let new_tetro = rotate();
+                        if (!checkObstacle(0, 0, new_tetro)) {
+                            tetro = new_tetro
+                        }
                         break
                     default:
                         break
