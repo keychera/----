@@ -92,21 +92,40 @@
                 return rotated
             }
 
-            document.onkeydown = e => {
-                switch (e.keyCode) {
-                    case 37: //左
+            const hidari = 37
+            const ue = 38
+            const migi = 39
+            const shita = 40
+            const supeesu = 32
+
+            function move(keyCode) {
+                switch (keyCode) {
+                    case hidari: //左
                         if (!checkObstacle(-1, 0)) tetro_x--
                         break
-                    case 38: //上
+                    case ue: //上
                         if (!checkObstacle(0, -1)) tetro_y--
                         break
-                    case 39: //右
+                    case migi: //右
                         if (!checkObstacle(1, 0)) tetro_x++
                         break
-                    case 40: //下
-                        if (!checkObstacle(0, 1)) tetro_y++
+                    case shita: //下
+                        if (!checkObstacle(0, 1)) {
+                            tetro_y++
+                        } else {
+                            for (let y = tetro_y; (y < field.length && y < tetro_y + tetro.length); y++) {
+                                const field_x_row = field[y]
+                                const tetro_x_row = tetro[y - tetro_y]
+                                for (let x = tetro_x; (x < field_x_row.length && x < tetro_x + tetro_x_row.length); x++) {
+                                    field[y][x] = tetro_x_row[x - tetro_x] == 1 ? 1 : field[y][x]
+                                }
+                            }
+                            tetro_x = 0
+                            tetro_y = 0
+                        }
+
                         break
-                    case 32: //スペース
+                    case supeesu: //スペース
                         let new_tetro = rotate();
                         if (!checkObstacle(0, 0, new_tetro)) {
                             tetro = new_tetro
@@ -120,6 +139,13 @@
                 drawElement(tetro, tetro_x, tetro_y)
             }
 
+            document.onkeydown = e => { move(e.keyCode) }
+
+            function dropTetro() {
+                move(shita)
+            }
+
+            setInterval(dropTetro, 1000);
             
 
         </script>
